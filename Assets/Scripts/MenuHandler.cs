@@ -44,7 +44,7 @@ public class MenuHandler : MonoBehaviour
     }
     public void Loadgame()
     {
-        SceneManager.LoadScene("Walk");
+        SceneManager.LoadScene(1);
     }
     public void Exitgame()
     {

@@ -16,7 +16,7 @@ public class Interact : MonoBehaviour
         //hide cursor
         Cursor.visible = false;
 
-        player = GameObject.Find("Player");
+        player = GameObject.FindGameObjectWithTag("Player");
         mainCam = GameObject.FindGameObjectWithTag("MainCamera");
 
 

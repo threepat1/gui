@@ -44,7 +44,7 @@ public class CustomisationSet : MonoBehaviour
     // the points in which we use to increase our stats
     public int points = 10;
     public CharacterClass charClass = CharacterClass.Barbarian;
-    public string[] className = new string[8];
+    public string[] selectedClass = new string[8];
     public int selectedIndex = 0;
 
     [Header("Dropdown Menu")]
@@ -66,8 +66,10 @@ public class CustomisationSet : MonoBehaviour
 
     private void Start()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         statArray = new string[] { "Strength", "Dexterity", "Constitution", "Wisdom", "Intelligence", "Charisma" };
-        className = new string[] {" Barbarian","Bard","Druid","Monk","Paladin","Ranger","Sorcerer","Warlock"};
+        selectedClass = new string[] {" Barbarian","Bard","Druid","Monk","Paladin","Ranger","Sorcerer","Warlock"};
         //for loop looping from 0 to less than the max amount of skin textures we need
         for (int i = 0; i < skinMax; i++)
         {
@@ -306,6 +308,14 @@ public class CustomisationSet : MonoBehaviour
 
         //SetString CharacterName
         PlayerPrefs.SetString("CharacterName", charName);
+        //Set stat
+
+        for(int i = 0; i < stats.Length; i++)
+        {
+            PlayerPrefs.SetInt(statArray[i], (stats[i]+ tempStats[i]));
+        }
+        // save to regedit a string called Characterclass with the data selectedClass[selectedIndex]
+        PlayerPrefs.SetString("CharacterClass", selectedClass[selectedIndex]);
     }
     #endregion
 
@@ -489,7 +499,7 @@ public class CustomisationSet : MonoBehaviour
         {
             //this button will run the save function and also load into the game level
             Save();
-            SceneManager.LoadScene("Game");
+            SceneManager.LoadScene(2);
 
         }
         #endregion
@@ -505,13 +515,13 @@ public class CustomisationSet : MonoBehaviour
         if (showDropdown)
         {
             scrollPos = GUI.BeginScrollView(new Rect(6f*scrW,1f*scrH,2.5f*scrW,2f*scrH),scrollPos, new Rect(0,0,2*scrW,4f*scrH),false,true);
-        for(int d = 0; d < className.Length; d++)
+        for(int d = 0; d < selectedClass.Length; d++)
             {
-                if(GUI.Button(new Rect(0,0+(0.5f*scrH)*d, 1.75f*scrW, 0.5f*scrH), className[d]))
+                if(GUI.Button(new Rect(0,0+(0.5f*scrH)*d, 1.75f*scrW, 0.5f*scrH), selectedClass[d]))
                 {
                     selectedIndex = d;
                     ChooseClass(selectedIndex);
-                    classButton = className[d];
+                    classButton = selectedClass[d];
                     showDropdown = false;
                     points = 10;
                     tempStats[0] = 0;
@@ -549,9 +559,9 @@ public class CustomisationSet : MonoBehaviour
                    
                 }
                 
-                }
-           
             }
+           
+        }
         if (points < 10)
         {
             if (GUI.Button(new Rect(3.75f * scrW, 5.5f * scrH + i * (scrH), scrW, 0.5f * scrH), "Reset"))
@@ -567,6 +577,8 @@ public class CustomisationSet : MonoBehaviour
 
 
         }
+
+
         
         #endregion
     }

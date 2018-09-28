@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor.SceneManagement;
 //this script can be found in the Component section under the option Character Set Up 
 //Character Handler
 public class CharacterHandler : MonoBehaviour
-{ 
+{
     #region Variables
     [Header("Character")]
 
@@ -13,7 +14,7 @@ public class CharacterHandler : MonoBehaviour
     //connection to players character controller
     public CharacterController controller;
     #endregion
-    [Header( "Health")]
+    [Header("Health")]
     #region Health
     //max and min health
     public float maxHealth;
@@ -26,13 +27,19 @@ public class CharacterHandler : MonoBehaviour
     public int level;
     //max and min experience 
     public int maxExp, curExp;
-    #region Stamina
-    int dex;
-    int str;
-    int wis;
-    int intel;
-    int chr;
-    int con;
+    #region Status
+   
+    public string[] statArray = new string[6];
+    public int[] stats = new int[6];
+    public int[] tempStats = new int[6];
+    public CharacterClass charClass = CharacterClass.Barbarian;
+
+    public int points = 0;
+  
+    public bool levelUp;
+
+
+
 
 
     #endregion
@@ -46,25 +53,38 @@ public class CharacterHandler : MonoBehaviour
     #region Start
     public void Start()
     {
+
+        level =  PlayerPrefs.GetInt("Level",1);
+        maxExp =  PlayerPrefs.GetInt("MaxEXP", 60);
+        curExp = PlayerPrefs.GetInt("CurrentEXP", 0);
         //set max health to 100
         maxHealth = 100f;
-        maxHealth += con * 5;
+        maxHealth += stats[2] * 5;
         //set current health to max
         curHealth = maxHealth;
         //make sure player is alive
         alive = true;
         //max exp starts at 60
-        maxExp = 60;
+
         //connect the Character Controller to the controller variable
         controller = this.GetComponent<CharacterController>();
 
         
+
+        //set up status
+        statArray = new string[] { "Strength", "Dexterity", "Constitution", "Wisdom", "Intelligence", "Charisma" };
+         for (int i = 0; i < stats.Length; i++)
+        {
+            stats[i] = PlayerPrefs.GetInt(statArray[i],(stats[i]+tempStats[i]));
+        }
+        charClass = (CharacterClass)System.Enum.Parse(typeof(CharacterClass), PlayerPrefs.GetString("CharacterClass", "Barbarian"));
+        
     }
     #endregion
     #region Update
-        private void Update()
+    private void Update()
     {
-
+    
         //if our current experience is greater or equal to the maximum experience
         if (curExp >= maxExp)
         {
@@ -72,8 +92,15 @@ public class CharacterHandler : MonoBehaviour
             curExp -= maxExp;
             //our level goes up by one
             level++;
-        //the maximum amount of experience is increased by 50
-        maxExp += 50;
+
+            levelUp = true;
+            points += 5;
+            //write
+
+            //the maximum amount of experience is increased by 50
+            maxExp += 50;
+
+
         }
         curHealth = (int)curHealth;
     }
@@ -98,14 +125,14 @@ public class CharacterHandler : MonoBehaviour
         if (alive && curHealth == 0)
         {
             //and our health is less than or equal to 0
-            
-                //alive is false
-                alive = false;
 
-                //controller is turned off
-                controller.enabled = false;
-                Debug.Log("Disable on death");
-            
+            //alive is false
+            alive = false;
+
+            //controller is turned off
+            controller.enabled = false;
+            Debug.Log("Disable on death");
+
         }
 
     }
@@ -136,12 +163,74 @@ public class CharacterHandler : MonoBehaviour
         GUI.Box(new Rect(6 * scrW, 0.75f * scrH, curExp * (4 * scrW) / maxExp, 0.5f * scrH), "");
         //current experience divided by the posistion on screen and timesed by the total max experience
 
-       
+
         //GUI Draw Texture on the screen that has the mini map render texture attached
         GUI.DrawTexture(new Rect(13.75f * scrW, 0.25f * scrH, 2 * scrW, 2 * scrH), miniMap);
+        //Text
+       
+        if (levelUp)
+        {
+            Cursor.lockState = CursorLockMode.Confined;
+            //hide cursor
+            Cursor.visible = true;
+
+            GUI.Box(new Rect(3.75f * scrW, 2f * scrH, 2f * scrW, 0.5f * scrH), "Points:" + points);
+
+        for (int s = 0; s < statArray.Length; s++)
+        {
+            if (points > 0)
+            {
+                if (GUI.Button(new Rect(5.75f * scrW, 2.5f * scrH + s * (0.5f * scrH), 0.5f * scrW, 0.5f * scrH), "+"))
+                {
+                    points--;
+                    tempStats[s]++;
+                }
+            }
+            GUI.Box(new Rect(3.75f * scrW, 2.5f * scrH + s * (0.5f * scrH), 2f * scrW, 0.5f * scrH), statArray[s] + ":" + (stats[s] + tempStats[s]));
+            if (points < 100 && tempStats[s] > 0)
+            {
+                if (GUI.Button(new Rect(3.25f * scrW, 2.5f * scrH + s * (0.5f * scrH), 0.5f * scrW, 0.5f * scrH), "-"))
+                {
+                    points++;
+                    tempStats[s]--;
+
+                }
+                    
+            }
+            
+
+        }
+ 
+               if (GUI.Button(new Rect(0.25f * scrW, scrH + 1 * (0.5f * scrH), 2 * scrW, 0.5f * scrH), "Save"))
+                {
+                    
+                    Save();
+                for (int i = 0; i < 6; i++)
+                {
+                    tempStats[i] = 0;
+                }
+
+                levelUp = false;
+            }
+            
+        }
+        #endregion
+       
     }
     #endregion
+    void Save()
+    {
+        PlayerPrefs.SetInt("Level", level);
+        PlayerPrefs.SetInt("MaxEXP", maxExp);
+        PlayerPrefs.SetInt("CurrentEXP", curExp);
 
-    #endregion
+        for (int i = 0; i < stats.Length; i++)
+        {
+            PlayerPrefs.SetInt(statArray[i], (stats[i]+ tempStats[i]));
+
+        }
+        
+
+    }
 
 }
