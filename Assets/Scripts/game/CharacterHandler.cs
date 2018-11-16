@@ -17,8 +17,8 @@ public class CharacterHandler : MonoBehaviour
     [Header("Health")]
     #region Health
     //max and min health
-    public float maxHealth;
-    public float curHealth;
+    public static float maxHealth;
+    public static float curHealth;
     public GUIStyle healthBar;
     #endregion
     //[Header("Levels and Exp")]
@@ -53,31 +53,33 @@ public class CharacterHandler : MonoBehaviour
     #region Start
     public void Start()
     {
+        //set up status
+        statArray = new string[] { "Strength", "Dexterity", "Constitution", "Wisdom", "Intelligence", "Charisma" };
+        for (int i = 0; i < stats.Length; i++)
+        {
+            stats[i] = PlayerPrefs.GetInt(statArray[i], (stats[i] + tempStats[i]));
+        }
+        charClass = (CharacterClass)System.Enum.Parse(typeof(CharacterClass), PlayerPrefs.GetString("CharacterClass", "Barbarian"));
 
-        level =  PlayerPrefs.GetInt("Level",1);
-        maxExp =  PlayerPrefs.GetInt("MaxEXP", 60);
-        curExp = PlayerPrefs.GetInt("CurrentEXP", 0);
+        // level =  PlayerPrefs.GetInt("Level",1);
+        // maxExp =  PlayerPrefs.GetInt("MaxEXP", 60);
+        // curExp = PlayerPrefs.GetInt("CurrentEXP", 0);
         //set max health to 100
-        maxHealth = 100f;
+        maxHealth = 100;
         maxHealth += stats[2] * 5;
         //set current health to max
-        curHealth = maxHealth;
+        curHealth = maxHealth - 10;
+        level = 1;
         //make sure player is alive
         alive = true;
         //max exp starts at 60
-
+        maxExp = 60;
         //connect the Character Controller to the controller variable
         controller = this.GetComponent<CharacterController>();
 
         
 
-        //set up status
-        statArray = new string[] { "Strength", "Dexterity", "Constitution", "Wisdom", "Intelligence", "Charisma" };
-         for (int i = 0; i < stats.Length; i++)
-        {
-            stats[i] = PlayerPrefs.GetInt(statArray[i],(stats[i]+tempStats[i]));
-        }
-        charClass = (CharacterClass)System.Enum.Parse(typeof(CharacterClass), PlayerPrefs.GetString("CharacterClass", "Barbarian"));
+        
         
     }
     #endregion
@@ -147,28 +149,34 @@ public class CharacterHandler : MonoBehaviour
         //scrW - 16
         float scrH = Screen.height / 9;
 
-        for (int x = 0; x < 16; x++)
+        /*for (int x = 0; x < 16; x++)
         {
-            for (int y = 0; y < 9; y++) ;
+            for (int y = 0; y < 9; y++)
+            {
+                GUI.Box(new Rect(scrW * x,scrH*y,scrW,scrH),"");
+            }
         }
-        //scrH - 9
-        //GUI Box on screen for the healthbar background
-        GUI.Box(new Rect(6 * scrW, 0.25f * scrH, 4 * scrW, 0.5f * scrH), "");
-        //GUI Box for current health that moves in same place as the background bar
-        GUI.Box(new Rect(6 * scrW, 0.25f * scrH, curHealth * (4 * scrW) / maxHealth, 0.5f * scrH), "", healthBar);
-        //current Health divided by the posistion on screen and timesed by the total max health
-        //GUI Box on screen for the experience background
-        GUI.Box(new Rect(6 * scrW, 0.75f * scrH, 4 * scrW, 0.5f * scrH), "");
-        //GUI Box for current experience that moves in same place as the background bar
-        GUI.Box(new Rect(6 * scrW, 0.75f * scrH, curExp * (4 * scrW) / maxExp, 0.5f * scrH), "");
-        //current experience divided by the posistion on screen and timesed by the total max experience
+        */
+        if (!Inventory.showInv)
+        {
+            //GUI Box on screen for the healthbar background
+            GUI.Box(new Rect(6 * scrW, 0.25f * scrH, 4 * scrW, 0.5f * scrH), "");
+            //GUI Box for current health that moves in same place as the background bar
+            GUI.Box(new Rect(6 * scrW, 0.25f * scrH, curHealth * (4 * scrW) / maxHealth, 0.5f * scrH), "", healthBar);
+            //current Health divided by the posistion on screen and timesed by the total max health
+            //GUI Box on screen for the experience background
+            GUI.Box(new Rect(6 * scrW, 0.75f * scrH, 4 * scrW, 0.5f * scrH), "");
+            //GUI Box for current experience that moves in same place as the background bar
+            GUI.Box(new Rect(6 * scrW, 0.75f * scrH, curExp * (4 * scrW) / maxExp, 0.5f * scrH), "");
+            //current experience divided by the posistion on screen and timesed by the total max experience
 
 
-        //GUI Draw Texture on the screen that has the mini map render texture attached
-        GUI.DrawTexture(new Rect(13.75f * scrW, 0.25f * scrH, 2 * scrW, 2 * scrH), miniMap);
+            //GUI Draw Texture on the screen that has the mini map render texture attached
+            GUI.DrawTexture(new Rect(13.75f * scrW, 0.25f * scrH, 2 * scrW, 2 * scrH), miniMap);
+        }
         //Text
-       
-        if (levelUp)
+
+        if (levelUp) 
         {
             Cursor.lockState = CursorLockMode.Confined;
             //hide cursor

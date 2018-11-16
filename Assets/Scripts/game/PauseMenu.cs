@@ -2,56 +2,78 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class PauseMenu : MonoBehaviour {
+public class PauseMenu : MonoBehaviour
+{
 
-    public static bool paused ;
+    public static bool paused;
     public bool showOption;
     public GameObject pauseMenu, optionMenu;
-
+    public AudioSource soundAudio;
+    public Light dirLight;
+    public Slider soundSlider;
+    public Slider lightSlider;
     public GameObject mainCam;
     public GameObject player;
 
 
     // Use this for initialization
-    void Start () {
-     
+    void Start()
+    {
+
         Time.timeScale = 1f;
         paused = false;
         pauseMenu.SetActive(false);
+
         player = GameObject.FindGameObjectWithTag("Player");
         mainCam = GameObject.FindGameObjectWithTag("MainCamera");
-
+        soundAudio = GameObject.Find("Audio Source").GetComponent<AudioSource>();
+        dirLight = GameObject.Find("Directional Light").GetComponent<Light>();
+        soundSlider.value = PlayerPrefs.GetFloat("Audio Source");
+        lightSlider.value = PlayerPrefs.GetFloat("Directional Light");
+        return;
 
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
-		if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePause();
         }
-	}
+    }
     public void ToggleOption()
     {
         if (showOption)
         {
             showOption = false;
-           
+            pauseMenu.SetActive(true);
+            optionMenu.SetActive(false);
+
+
         }
         else
         {
             showOption = true;
             pauseMenu.SetActive(false);
-            player.GetComponent<CharacterMovement>().enabled = true;
-            player.GetComponent<MouseLook>().enabled = true;
-            mainCam.GetComponent<MouseLook>().enabled = true;
+            optionMenu.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            soundSlider = GameObject.Find("AudioSlider").GetComponent<Slider>();
+            lightSlider = GameObject.Find("Brightness").GetComponent<Slider>();
+            soundSlider.value = soundAudio.volume;
+            lightSlider.value = dirLight.intensity;
+            player.GetComponent<CharacterMovement>().enabled = false;
+            player.GetComponent<MouseLook>().enabled = false;
+            mainCam.GetComponent<MouseLook>().enabled = false;
+
 
         }
         optionMenu.SetActive(showOption);
     }
-    public void Resume ()
+    public void Resume()
     {
         paused = false;
         pauseMenu.SetActive(false);
@@ -59,13 +81,15 @@ public class PauseMenu : MonoBehaviour {
         player.GetComponent<CharacterMovement>().enabled = true;
         player.GetComponent<MouseLook>().enabled = true;
         mainCam.GetComponent<MouseLook>().enabled = true;
-        Debug.Log("Resume");
-   
+
+
 
     }
-public void LoadMenu ()
+    public void LoadMenu()
     {
-        Time.timeScale= 1f;
+        Time.timeScale = 1f;
+        PlayerPrefs.SetFloat("Audio Source", soundAudio.volume);
+        PlayerPrefs.SetFloat("Directional Light", dirLight.intensity);
         SceneManager.LoadScene(0);
     }
     public void Exitmenu()
@@ -77,44 +101,33 @@ public void LoadMenu ()
     }
     public void TogglePause()
     {
-        if(paused && !showOption && !Inventory.showInv)
-        {
-            Time.timeScale = 1;
-            paused = false;
-            pauseMenu.SetActive(false);
-            player.GetComponent<CharacterMovement>().enabled = true;
-            player.GetComponent<MouseLook>().enabled = true;
-            mainCam.GetComponent<MouseLook>().enabled = true;
 
-        }
-        else if (paused && showOption)
-        {
-            ToggleOption();
-            pauseMenu.SetActive(true);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            player.GetComponent<CharacterMovement>().enabled = false;
-            player.GetComponent<MouseLook>().enabled = false;
-            mainCam.GetComponent<MouseLook>().enabled = false;
-        }
-        else if (paused && !showOption && Inventory.showInv)
-        {
-            paused = false;
-            pauseMenu.SetActive(false);
+        Time.timeScale = 0;
+        pauseMenu.SetActive(true);
+        paused = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        player.GetComponent<CharacterMovement>().enabled = false;
+        player.GetComponent<MouseLook>().enabled = false;
+        mainCam.GetComponent<MouseLook>().enabled = false;
 
 
-        }
-        else
-        {
-            Time.timeScale = 0;
-            paused = true;
-            pauseMenu.SetActive(true);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            player.GetComponent<CharacterMovement>().enabled = false;
-            player.GetComponent<MouseLook>().enabled = false;
-            mainCam.GetComponent<MouseLook>().enabled = false;
+    }
+    public void BackMenu()
+    {
+        showOption = false;
+        pauseMenu.SetActive(true);
+        optionMenu.SetActive(false);
+        return;
+    }
+    public void Volume()
+    {
+        soundAudio.volume = soundSlider.value;
+    }
+    public void Brightness()
+    {
+        dirLight.intensity = lightSlider.value;
 
-        }
     }
 }
+

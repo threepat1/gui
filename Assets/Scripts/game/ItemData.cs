@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class ItemData
 {
     public static Item CreateItem(int ItemID)
     {
+        //This is what we need to make an item
         string name = "";
         string description = "";
         int value = 0;
@@ -17,13 +16,14 @@ public static class ItemData
         string mesh = "";
         ItemTypes type = ItemTypes.Armour;
 
+        //This is where we set the item data
         switch (ItemID)
         {
             #region Consumables 0-99
             case 0:
                 name = "Apple";
                 description = "Munchies and Crunchies";
-                value = 10;
+                value = 5;
                 damage = 0;
                 armour = 0;
                 amount = 1;
@@ -41,12 +41,12 @@ public static class ItemData
                 amount = 1;
                 heal = 50;
                 icon = "Cheese_Icon";
-                mesh = "Chesse_Mesh";
+                mesh = "Cheese_Mesh";
                 type = ItemTypes.Consumables;
                 break;
             case 2:
                 name = "Meat";
-                description = "Delicious Meat";
+                description = "Mystery Meat";
                 value = 15;
                 damage = 0;
                 armour = 0;
@@ -56,12 +56,11 @@ public static class ItemData
                 mesh = "Meat_Mesh";
                 type = ItemTypes.Consumables;
                 break;
-
             #endregion
             #region Armour 100-199
             case 100:
-                name = "WoodenHelmet";
-                description = "";
+                name = "Wooden Helmet";
+                description = "More of a bucket really";
                 value = 1;
                 damage = 0;
                 armour = 1;
@@ -72,8 +71,8 @@ public static class ItemData
                 type = ItemTypes.Armour;
                 break;
             case 101:
-                name = "LeatherHelmet";
-                description = "";
+                name = "Leather Helmet";
+                description = "Hemlet made from hide";
                 value = 25;
                 damage = 0;
                 armour = 10;
@@ -84,8 +83,8 @@ public static class ItemData
                 type = ItemTypes.Armour;
                 break;
             case 102:
-                name = "IronHelmet";
-                description = "Yellow Gold";
+                name = "Iron Helmet";
+                description = "He seems abit think dont he";
                 value = 50;
                 damage = 0;
                 armour = 25;
@@ -93,21 +92,20 @@ public static class ItemData
                 heal = 0;
                 icon = "IronHelmet_Icon";
                 mesh = "IronHelmet_Mesh";
-                type = ItemTypes.Consumables;
+                type = ItemTypes.Armour;
                 break;
-
             #endregion
             #region Weapon 200-299
             case 200:
                 name = "Wooden Sword";
-                description = "Wooden Sword";
+                description = "Practice Sword";
                 value = 1;
                 damage = 5;
                 armour = 0;
                 amount = 1;
                 heal = 0;
                 icon = "WoodenSword_Icon";
-                mesh = "WoodenSword_Icon_Mesh";
+                mesh = "WoodenSword_Mesh";
                 type = ItemTypes.Weapon;
                 break;
             case 201:
@@ -124,7 +122,7 @@ public static class ItemData
                 break;
             case 202:
                 name = "Iron Sword";
-                description = "For destroy enemies";
+                description = "Which end do I hold?";
                 value = 50;
                 damage = 50;
                 armour = 0;
@@ -134,19 +132,18 @@ public static class ItemData
                 mesh = "IronSword_Mesh";
                 type = ItemTypes.Weapon;
                 break;
-
             #endregion
-            #region Craftable 300-399
+            #region Crafting 300-399
             case 300:
-                name = "Oak Brunch";
-                description = "Brunch of Oak";
+                name = "Oak Branch";
+                description = "Thick Branch of Oak";
                 value = 1;
                 damage = 0;
                 armour = 0;
                 amount = 1;
                 heal = 0;
-                icon = "OakBrucnch_Icon";
-                mesh = "OakBrucnch_Mesh";
+                icon = "OakBranch_Icon";
+                mesh = "OakBranch_Mesh";
                 type = ItemTypes.Craftable;
                 break;
             case 301:
@@ -173,12 +170,11 @@ public static class ItemData
                 mesh = "IronIngot_Mesh";
                 type = ItemTypes.Craftable;
                 break;
-
             #endregion
             #region Misc 400-499
             case 400:
                 name = "Jug";
-                description = "";
+                description = "Holds water";
                 value = 1;
                 damage = 0;
                 armour = 0;
@@ -189,30 +185,29 @@ public static class ItemData
                 type = ItemTypes.Misc;
                 break;
             case 401:
-                name = "Iron Ore";
-                description = "Iron...kinda";
-                value = 2;
+                name = "Sword Fragment";
+                description = "Broken Sword";
+                value = 0;
                 damage = 0;
                 armour = 0;
                 amount = 1;
                 heal = 0;
-                icon = "IronOre_Icon";
-                mesh = "IronOre_Mesh";
-                type = ItemTypes.Craftable;
+                icon = "SwordFragment_Icon";
+                mesh = "SwordFragmen_Mesh";
+                type = ItemTypes.Quest;
                 break;
             case 402:
-                name = "Iron Ingot";
-                description = "Bar of Iron";
-                value = 10;
+                name = "Vape";
+                description = "Cloud Maker";
+                value = 0;
                 damage = 0;
                 armour = 0;
                 amount = 1;
                 heal = 0;
-                icon = "IronIngot_Icon";
-                mesh = "IronIngot_Mesh";
-                type = ItemTypes.Craftable;
+                icon = "Vape_Icon";
+                mesh = "Vape_Mesh";
+                type = ItemTypes.Quest;
                 break;
-
             #endregion
             default:
                 ItemID = 0;
@@ -227,9 +222,9 @@ public static class ItemData
                 mesh = "Apple_Mesh";
                 type = ItemTypes.Consumables;
                 break;
-
         }
 
+        //this is where we create the item
         Item temp = new Item
         {
             Name = name,
@@ -242,16 +237,9 @@ public static class ItemData
             Heal = heal,
             Type = type,
             Icon = Resources.Load("Icons/" + icon) as Texture2D,
-            Meshname = mesh
+            MeshName = mesh
         };
         return temp;
-
-       
-
-       
-        
-
-
-
     }
+
 }

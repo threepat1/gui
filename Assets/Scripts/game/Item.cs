@@ -15,12 +15,7 @@ public class Item
     private ItemTypes _type;
     public Item()
     {
-        _id = 0;
-        _name = "Unknown";
-        _description = "???";
-        _value = 0;
-        _mesh = "Meshname";
-        _type = ItemTypes.Quest;
+
     }
     public Item(int id, string name, int value, string description, ItemTypes type, Texture2D icon, string meshName)
     {
@@ -79,7 +74,7 @@ public class Item
         set { _heal = value; }
     }
 
-    public string Meshname
+    public string MeshName
     {
         get { return _mesh; }
         set { _mesh = value; }

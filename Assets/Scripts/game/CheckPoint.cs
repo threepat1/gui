@@ -11,9 +11,10 @@ public class CheckPoint : MonoBehaviour
     //GameObject for our currentCheck
     public GameObject curCheckpoint;
     [Header("Character Handler")]
+    public CharacterHandler charH;
 
     //character handler script that holds the players health
-    public CharacterHandler charH;
+    
     #endregion
 
     #region Start
@@ -41,13 +42,13 @@ public class CheckPoint : MonoBehaviour
     {
  
         //if our characters health is less than or equal to 0
-        if(charH.curHealth == 0)
+        if(CharacterHandler.curHealth == 0)
         {
             //our transform.position is equal to that of the checkpoint
             transform.position = curCheckpoint.transform.position;
 
             //our characters health is equal to full health
-            charH.curHealth = charH.maxHealth;
+            CharacterHandler.curHealth = CharacterHandler.maxHealth;
             //character is alive
             charH.alive = true;
 
