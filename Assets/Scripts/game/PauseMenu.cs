@@ -81,7 +81,8 @@ public class PauseMenu : MonoBehaviour
         player.GetComponent<CharacterMovement>().enabled = true;
         player.GetComponent<MouseLook>().enabled = true;
         mainCam.GetComponent<MouseLook>().enabled = true;
-
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
 
     }

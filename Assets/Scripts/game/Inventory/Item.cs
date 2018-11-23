@@ -91,7 +91,7 @@ public class Item
         set { _type = value; }
     }
     #endregion
-   
+
 }
 public enum ItemTypes
 {

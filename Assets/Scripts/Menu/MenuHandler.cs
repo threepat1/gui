@@ -103,6 +103,9 @@ public class MenuHandler : MonoBehaviour
         Screen.SetResolution((int)res[resIndex].x, (int)res[resIndex].y, isFullScreen);
     }
    
-
+    public void Back()
+    {
+        OptionToggle();
+    }
 
 }
