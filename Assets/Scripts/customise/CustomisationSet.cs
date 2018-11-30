@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+using System.Xml.Serialization;
+using System.IO;
+using System;
 //you will need to change Scenes
 public class CustomisationSet : MonoBehaviour
 {
@@ -55,7 +59,14 @@ public class CustomisationSet : MonoBehaviour
 
     public string classButton = "";
 
+    [Header("Save")]
+    public string fullPath;
+    public string fileName = "GameData";
 
+    public static CustomisationSet instance = null;
+
+
+    public KeyData saveData = new KeyData();
 
     #endregion
 
@@ -66,6 +77,7 @@ public class CustomisationSet : MonoBehaviour
 
     private void Start()
     {
+      
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         statArray = new string[] { "Strength", "Dexterity", "Constitution", "Wisdom", "Intelligence", "Charisma" };
@@ -130,7 +142,12 @@ public class CustomisationSet : MonoBehaviour
     }
     #endregion
     #endregion
-
+    private void Awake()
+    {
+        instance = this;
+        // Here, the key bindings are set to what is stored in the save file. If it is unable to find the stored (KeyCode), then the named input is set to a defined default KeyCode.
+        fullPath = Application.dataPath + "/SaveData/Data/" + fileName + ".xml";
+    }
     #region SetTexture
     //the string is the name of the material we are editing, the int is the direction we are changing
     //Create a function that is called SetTexture it should contain a string and int
@@ -292,19 +309,31 @@ public class CustomisationSet : MonoBehaviour
 
     #region Save
     //Function called Save this will allow us to save our indexes to PlayerPrefs
-    void Save()
+    public void Save()
     {
+       
 
+            var serializer = new XmlSerializer(typeof(KeyData));
+            using (var stream = new FileStream(fullPath, FileMode.Create))
+            {
+                serializer.Serialize(stream, saveData);
+            }
+            saveData.skinIndex = keys["Forward"];
+            saveData.backward = keys["Backward"];
+            saveData.jump = keys["Jump"];
+            saveData.left = keys["Left"];
+            saveData.right = keys["Right"];
+        
 
 
         //SetInt for SkinIndex, HairIndex, MouthIndex, EyesIndex
-        PlayerPrefs.SetInt("SkinIndex", skinIndex);
+       /* PlayerPrefs.SetInt("SkinIndex", skinIndex);
         PlayerPrefs.SetInt("HairIndex", hairIndex);
         PlayerPrefs.SetInt("MouthIndex", mouthIndex);
         PlayerPrefs.SetInt("EyesIndex", eyesIndex);
         PlayerPrefs.SetInt("ClothesIndex", clothesIndex);
         PlayerPrefs.SetInt("ArmourIndex", armourIndex);
-
+        */
 
         //SetString CharacterName
         PlayerPrefs.SetString("CharacterName", charName);
@@ -316,6 +345,7 @@ public class CustomisationSet : MonoBehaviour
         }
         // save to regedit a string called Characterclass with the data selectedClass[selectedIndex]
         PlayerPrefs.SetString("CharacterClass", selectedClass[selectedIndex]);
+        
     }
     #endregion
 

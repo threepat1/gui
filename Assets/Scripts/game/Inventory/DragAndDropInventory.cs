@@ -31,7 +31,7 @@ public class DragAndDropInventory : MonoBehaviour
     private Rect ClampToScreen(Rect r)
     {
         r.x = Mathf.Clamp(r.x, 0, Screen.width - r.width);
-        r.y = Mathf.Clamp(r.x, 0, Screen.height - r.height);
+        r.y = Mathf.Clamp(r.y, 0, Screen.height - r.height);
         return r;
     }
 
@@ -77,10 +77,10 @@ public class DragAndDropInventory : MonoBehaviour
     #region ToolTip Content
     private string ToolTipText(int ItemID)
     {
-        string toolTipText = "Name"+inventory[ItemID].Name+
-            "Description"+inventory[ItemID].Description + 
-            "Type" + inventory[ItemID].Type + 
-            "Value" + inventory[ItemID].Value;
+        string toolTipText = "Name:"+inventory[ItemID].Name + "\n" +
+            "Description:"+inventory[ItemID].Description + "\n" +
+            "Type:" + inventory[ItemID].Type + "\n" +
+            "Value:" + inventory[ItemID].Value; 
 
         return toolTipText;
     }
@@ -88,7 +88,7 @@ public class DragAndDropInventory : MonoBehaviour
     #region ToolTip Window
     void DrawToolTip(int windowID)
     {
-        GUI.Box(new Rect(0, 0, scr.x * 2, scr.y * 3), ToolTipText(toolTipItem));
+        GUI.Box(new Rect(0, 0, scr.x * 3, scr.y * 3), ToolTipText(toolTipItem));
     }
 
     #endregion
@@ -273,7 +273,7 @@ public class DragAndDropInventory : MonoBehaviour
         #region ToolTip
         if(showToolTip && showInv)
         {
-            toolTipRect = new Rect(e.mousePosition.x + 0.01f, e.mousePosition.y + 0.001f, scr.x * 2, scr.y * 3);
+            toolTipRect = new Rect(e.mousePosition.x + 0.01f, e.mousePosition.y + 0.001f, scr.x * 3, scr.y * 3);
             GUI.Window(15, toolTipRect, DrawToolTip, "");
         }
 
